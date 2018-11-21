@@ -25,9 +25,15 @@ namespace PlayersApi {
             return await _playersRepository.Get(request.Id);
         }
 
+        /// <summary>
+        /// Creates a new Player
+        /// </summary>
         [HttpPost("/api/players")]
-        public async Task<ActionResult> Post([FromBody]PlayerPostRequest post) {
-            var player = await _playersRepository.Add(post);
+        [ProducesResponseType(typeof(PlayerGet), 201)]
+        [ProducesResponseType(typeof(ProblemDetails), 400)]
+        
+        public async Task<ActionResult> Post([FromBody]PlayerPostRequest request) {
+            var player = await _playersRepository.Add(request);
             var url = _linkGenerator.GetPathByAction(HttpContext, 
                                                      nameof(Get), 
                                                      values: new { player.Id });
