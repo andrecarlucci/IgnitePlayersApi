@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace PlayersApi {
+    [ApiController]
     public class PlayersController : Controller {
         private readonly IPlayersRepository _playersRepository;
         private readonly LinkGenerator _linkGenerator;
