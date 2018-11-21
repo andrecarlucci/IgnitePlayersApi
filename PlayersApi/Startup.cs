@@ -7,10 +7,12 @@ namespace PlayersApi {
     public class Startup {
         public void ConfigureServices(IServiceCollection services) {
             services.AddSingleton<IPlayersRepository, PlayersRepository>();
+            services.AddHealthChecks().AddCheck<MyHealthCheck>("MyHealthCheck");
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env) {
+            app.UseHealthChecks("/hc");
             app.UseMvc();
         }
     }

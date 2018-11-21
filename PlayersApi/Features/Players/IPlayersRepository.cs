@@ -6,5 +6,6 @@ namespace PlayersApi {
         Task<Player> Add(PlayerPostRequest player);
         Task<PlayerGet> Get(string id);
         Task<List<PlayerItem>> List();
+        Task<bool> IsUp();
     }
 }

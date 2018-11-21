@@ -34,5 +34,9 @@ namespace PlayersApi {
                              .ToPlayerGet();
             return Task.FromResult(get);
         }
+
+        public Task<bool> IsUp() {
+            return Task.FromResult(true);
+        }
     }
 }
