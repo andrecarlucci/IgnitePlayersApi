@@ -1,17 +1,21 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
+using PlayersApi.Features.Players.Get;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace PlayersApi {
     [ApiController]
-    public class PlayersController : Controller {
+    public class PlayersController : ControllerBase {
         private readonly IPlayersRepository _playersRepository;
+        private readonly IBadgesClient _badgesClient;
         private readonly LinkGenerator _linkGenerator;
 
-        public PlayersController(IPlayersRepository playersRepository, 
+        public PlayersController(IPlayersRepository playersRepository,
+                                 IBadgesClient badgesClient,
                                  LinkGenerator linkGenerator) {
             _playersRepository = playersRepository;
+            _badgesClient = badgesClient;
             _linkGenerator = linkGenerator;
         }
 
@@ -21,8 +25,13 @@ namespace PlayersApi {
         }
 
         [HttpGet("/api/players/{id}")]
-        public async Task<ActionResult<PlayerGet>> Get(PlayerGetRequest request) {
-            return await _playersRepository.Get(request.Id);
+        public async Task<ActionResult<PlayerGet>> Get([FromQuery]PlayerGetRequest request) {
+            var player = await _playersRepository.Get(request.Id);
+            if(player == null) {
+                return NotFound();
+            }
+            player.Badges = await _badgesClient.Get(player.Id);
+            return Ok(player);
         }
 
         /// <summary>
