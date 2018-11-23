@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
-using PlayersApi.Features.Players.Get;
 using SharpApiRateLimit;
 using System.Collections.Generic;
 using System.Threading.Tasks;

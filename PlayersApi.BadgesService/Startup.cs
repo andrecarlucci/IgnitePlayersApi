@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
+using PlayersApi.Pipeline;
 
 namespace PlayersApi.BadgesService {
     public class Startup {
@@ -10,6 +11,7 @@ namespace PlayersApi.BadgesService {
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env) {
+            app.UseMiddleware<LogRequestMiddleware>();
             app.UseMvc();
         }
     }
