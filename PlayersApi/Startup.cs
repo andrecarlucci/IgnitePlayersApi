@@ -9,6 +9,7 @@ using PlayersApi.Swagger;
 using System;
 using System.Reflection;
 using PlayersApi.Pipeline;
+using SharpApiRateLimit;
 
 [assembly: ApiConventionType(typeof(MyApiConventions))]
 namespace PlayersApi {
@@ -21,6 +22,7 @@ namespace PlayersApi {
             services.AddHttpClient<IBadgesClient, BadgesClient>((s, c) => {
                 c.BaseAddress = new Uri("http://localhost:5500");
             });
+            services.AddRateLimit();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 

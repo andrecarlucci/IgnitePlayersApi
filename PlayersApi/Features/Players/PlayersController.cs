@@ -2,11 +2,13 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using PlayersApi.Features.Players.Get;
+using SharpApiRateLimit;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace PlayersApi {
     [ApiController]
+    [RateLimitByHeader("X-Token", "5s", 1)]
     public class PlayersController : ControllerBase {
         private readonly IMediator _mediator;
         private readonly IPlayersRepository _playersRepository;
