@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using PlayersApi.Features.Players.Get;
 using System.Collections.Generic;
@@ -7,16 +8,13 @@ using System.Threading.Tasks;
 namespace PlayersApi {
     [ApiController]
     public class PlayersController : ControllerBase {
+        private readonly IMediator _mediator;
         private readonly IPlayersRepository _playersRepository;
-        private readonly IBadgesClient _badgesClient;
-        private readonly LinkGenerator _linkGenerator;
 
-        public PlayersController(IPlayersRepository playersRepository,
-                                 IBadgesClient badgesClient,
-                                 LinkGenerator linkGenerator) {
+        public PlayersController(IMediator mediator,
+                                 IPlayersRepository playersRepository) {
+            _mediator = mediator;
             _playersRepository = playersRepository;
-            _badgesClient = badgesClient;
-            _linkGenerator = linkGenerator;
         }
 
         [HttpGet("/api/players")]
@@ -26,12 +24,7 @@ namespace PlayersApi {
 
         [HttpGet("/api/players/{id}")]
         public async Task<ActionResult<PlayerGet>> Get([FromQuery]PlayerGetRequest request) {
-            var player = await _playersRepository.Get(request.Id);
-            if(player == null) {
-                return NotFound();
-            }
-            player.Badges = await _badgesClient.Get(player.Id);
-            return Ok(player);
+            return await _mediator.Send(request);
         }
 
         /// <summary>
@@ -41,11 +34,12 @@ namespace PlayersApi {
         [ProducesResponseType(typeof(PlayerGet), 201)]
         [ProducesResponseType(typeof(ProblemDetails), 400)]
         
-        public async Task<ActionResult> Post([FromBody]PlayerPostRequest request) {
+        public async Task<ActionResult> Post([FromBody]PlayerPostRequest request,
+                                             [FromServices] LinkGenerator linkGenerator) {
             var player = await _playersRepository.Add(request);
-            var url = _linkGenerator.GetPathByAction(HttpContext, 
-                                                     nameof(Get), 
-                                                     values: new { player.Id });
+            var url = linkGenerator.GetPathByAction(HttpContext, 
+                                                    nameof(Get), 
+                                                    values: new { player.Id });
             return Created(url, player);
         }
     }
