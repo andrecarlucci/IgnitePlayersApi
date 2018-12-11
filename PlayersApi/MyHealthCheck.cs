@@ -12,9 +12,9 @@ namespace PlayersApi {
 
         public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default(CancellationToken)) {
             if(await _playersRepository.IsUp()) {
-                return HealthCheckResult.Passed();
+                return HealthCheckResult.Healthy();
             }
-            return HealthCheckResult.Failed();
+            return HealthCheckResult.Unhealthy();
         }
     }
 }
